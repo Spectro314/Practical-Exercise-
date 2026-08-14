@@ -6,59 +6,74 @@ on:
   push
 
 # Define all jobs within the pipeline.
+# https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-jobs
 jobs:
 
   # Define the test job.
+  # TODO: Set the `runs-on` parameter to ubuntu-latest.
   test:
     name: test
-    runs-on: ubuntu-latest
+    runs-on: <to-do>
     steps:
 
       # Install Python.
+      # TODO: Reference the following documentation to complete the missing `uses` parameter and set the `python-version` parameter to 3.12.
+      # https://github.com/actions/setup-python
       - name: python
-        uses: actions/setup-python@v5
+        uses: <to-do>
         with:
-          python-version: 3.12
+          python-version: <to-do>
 
       # Install Python dependencies.
+      # TODO: Using pip install black.
+      # https://github.com/psf/black
       - name: pip
-        run: python -m pip install black
+        run: <to-do>
 
       # Download the source code.
+      # TODO: Use the github checkout action to download the repo.
+      # Ensure the version you use is set to **4**.
+      # https://github.com/actions/checkout
       - name: clone
-        uses: actions/checkout@v4
+        uses: <to-do>
 
       # Conduct a QA test.
+      # Remember you can reference black and all of its command flags using the official documentation.
+      # https://github.com/psf/black
       - name: black
         run: black --diff --color --check .
 
   # Define the pre-build-scan job.
+  # TODO: Set the needs parameter to the job.id of the test job. https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idneeds
+  # TODO: Read somethings about semgrep at its official documentation https://semgrep.dev/docs/semgrep-ci/sample-ci-configs#github-actions
   pre-build-scan:
     name: pre-build-scan
-    needs: test
+    needs: <to-do>
     runs-on: ubuntu-latest
     container:
       image: semgrep/semgrep
 
     steps:
       # Download the source code.
-      - name: clone
-        uses: actions/checkout@v4
+      # TODO: Name this step clone and use github actions to checkout the repo
+      # Hint: Remember that we did this earlier.
+      # https://github.com/actions/checkout
       
       # Conduct a SAST scan.
       - name: semgrep
         run: semgrep scan --config auto
 
   # Define the build job.
+  # TODO: Set the job.id of the build job to `build`, change the <needs> param to the job.id 
+  # used by the pre-build-scan job, set the job to run on the latest version of ubuntu
   build:
-    name: build
-    needs: pre-build-scan
-    runs-on: ubuntu-latest
+    name: <to-do>
+    needs: <to-do>
+    runs-on: <to-do>
     steps:
 
       # Download the source code.
-      - name: clone
-        uses: actions/checkout@v4
+      # TODO
 
       # Build the container image.
       - name: docker
